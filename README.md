@@ -20,6 +20,28 @@ conda activate KGE
 python main.py
 ```
 ---
+# ComplEx1.0.0!!
+마지막 CompEx1.0.0 모델 구현까지 완료했습니다. 전에 만들었던 RotatE1.0.0 버전과 모델명만 제외하면 완전히 동일하게 구현이 가능했습니다.
+```
+result = pipeline(
+    dataset='nations',
+    model='complex', <-- 모델명만 변경
+    model_kwargs=dict(
+        embedding_dim=50,
+    ),
+    training_kwargs=dict(
+        num_epochs=100,
+        batch_size=64,
+        use_tqdm=True,
+    ),
+    optimizer_kwargs=dict(lr=1e-2),
+    device='cpu'
+)
+```
+
+실행결과, ComplEx는 TransE와 RotatE의 사이 정도의 성능지표 값이 나왔습니다. MRR은 0.54, Hits@10은 0.97로 나왔습니다. ComplEx는 비대칭 관계에 가능하기 때문에 데이터셋이 달라진다면 가장 좋게 나올 수도 있겠다 생각이 듭니다.
+
+---
 # RotatE1.0.0!!
 RotatE 모델 또한 구현을 완료했습니다. 라이브러리에 내장된 모델을 사용하기 때문에 TransE 구현과 큰 차이는 없었으나, TransE는 거리, 즉 벡터를 최소화하는 방식이였기에 norm 옵션이 필요했지만 RotatE는 복소수 공간에서 회전시키기 때문에 norm 옵션이 필요하지 않습니다. TransE1.1.0 버전에서 수정하였기에 나머지는 같은 기능을 제공합니다.
 ```
@@ -36,7 +58,7 @@ result = pipeline(
         use_tqdm=True,
     ),
     optimizer_kwargs=dict(lr=1e-2),
-    device='cpu', # 안전하게 CPU로 진행
+    device='cpu'
 )
 ```
 
@@ -91,6 +113,7 @@ result = pipeline(
     optimizer_kwargs=dict(lr=1e-2),
 )
 ```
+
 애를 먹었던건 성능 평가였는데, MRR과 Hits@10을 측정할 때, result에서 나오는 키값이 pykeen의 버전에 따라 계속 바뀌어서.. 한참을 찾았습니다.
 
 또한, 현재는 시각화를 matplotlib와 seaborn을 사용했는데, 2차원 산점도론 확 와닿지 않는 결과인것 같습니다.
