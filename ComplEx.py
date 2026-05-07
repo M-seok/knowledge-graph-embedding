@@ -9,32 +9,29 @@ from sklearn.manifold import TSNE
 from pykeen.pipeline import pipeline
 from sklearn.decomposition import PCA
 import pykeen.predict
-from pykeen.datasets import Nations # 샘플 데이터셋 추후 민석이 구해온 데이터셋으로 대체 예정
+from pykeen.datasets import FB15k237 # 샘플 데이터셋 추후 민석이 구해온 데이터셋으로 대체 예정
 
 
 OUTPUT = 'complexe_result'
 os.makedirs(OUTPUT, exist_ok=True) # OUTPUT 디렉터리생성
 
-device = torch.device("cpu")
+device = device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"현재 사용 중인 장치: {device}")
 
 print("ComplEx 모델 학습 및 시각화 시작")
 
 # pipeline 함수로 모델 학습 및 평가를 수행(자동으로 파라미터 설정해줌)
 result = pipeline(
-    dataset='nations',
+    dataset='FB15k237', 
     model='ComplEx',
-    # 모델 설정
-    model_kwargs=dict(
-        embedding_dim=50, # 임베딩 차원
-    ),
+    model_kwargs=dict(embedding_dim=500),
     device=device,
-    # 학습 설정
+    # 중복되었던 부분을 하나로 통합했습니다.
     training_kwargs=dict(
-        num_epochs=100, # 에폭 수
-        batch_size=64, # 배치 크기
+        num_epochs=700,   # 100회는 오래 걸릴 수 있으니 우선 50회로 테스트 권장
+        batch_size=64, 
         use_tqdm=True,
     ),
-    # 정규화 설정
     optimizer_kwargs=dict(lr=1e-2),
 )
 
